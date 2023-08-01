@@ -1,27 +1,31 @@
-const app = require('express')();
+// const app = require('express')();
 
-const server = require('http').createServer(app);
-const io = require('socket.io')(server, { cors: { origin: '*' } });
+// const server = require('http').createServer(app);
+// const io = require('socket.io')(server, { cors: { origin: '*' } });
+
+// const port = 3000;
+
+const io = require('socket.io')(3000, {
+  cors: {
+    origin: ['http://localhost:3001'],
+  },
+});
 
 io.on('connection', (socket) => {
-  socket.on('button-clicked', (data) => {
-    console.log(socket.id, data);
-    io.emit('increase', { data });
+  console.log(socket.id);
+
+  socket.on('event', (message) => {
+    console.log(message);
+    socket.broadcast.emit('received-message', message);
   });
 });
 
-// io.emit('hello', { msg: 'what what' });
-// io.on('button-clicked', () => console.log('button clicked bro!'));
-const port = 3000;
+// const transmitData = ['hello', 'world'];
 
-const transmitData = ['hello', 'world'];
+// app.get('/', (req, res) => {
+//   res.send({ msg: transmitData });
+// });
 
-// io.listen(3000);
-
-app.get('/', (req, res) => {
-  res.send({ msg: transmitData });
-});
-
-server.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+// server.listen(port, () => {
+//   console.log(`Example app listening on port ${port}`);
+// });
